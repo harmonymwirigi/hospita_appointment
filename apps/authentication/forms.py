@@ -29,3 +29,16 @@ class CreateAccountForm(FlaskForm):
     password = PasswordField('Password',
                              id='pwd_create',
                              validators=[DataRequired()])
+
+
+class DoctorAccountForm(FlaskForm):
+    username = StringField('Username',
+                         id='username_create',
+                         validators=[DataRequired()])
+    email = StringField('Email',
+                      id='email_create',
+                      validators=[DataRequired(), Email()])
+    hospital = StringField('Hospital Name',id = 'hospital_create', validators=[DataRequired()])
+    password = PasswordField('Password',
+                             id='pwd_create',
+                             validators=[DataRequired()])

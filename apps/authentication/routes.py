@@ -3,7 +3,7 @@
 Copyright (c) 2019 - present AppSeed.us
 """
 
-from flask import render_template, redirect, request, url_for
+from flask import render_template, redirect, request, url_for, session
 from flask_login import (
     current_user,
     login_user,
@@ -12,14 +12,13 @@ from flask_login import (
 
 from apps import db, login_manager
 from apps.authentication import blueprint
-from apps.authentication.forms import LoginForm, CreateAccountForm
-from apps.authentication.models import Users
-
+from apps.authentication.forms import LoginForm, CreateAccountForm, DoctorAccountForm
+from apps.authentication.models import Users, Doctors
 from apps.authentication.util import verify_pass
 
 @blueprint.route('/')
 def route_default():
-    return redirect(url_for('authentication_blueprint.login'))
+    return render_template('home/home.html')
 
 # Login & Registration
 
@@ -33,13 +32,17 @@ def login():
         password = request.form['password']
 
         # Locate user
-        user = Users.query.filter_by(username=username).first()
-
+        user1 = Users.query.filter_by(username=username).first()
+        user2 = Doctors.query.filter_by(username=username).first()
         # Check the password
-        if user and verify_pass(password, user.password):
-
-            login_user(user)
+        if user1 and verify_pass(password, user1.password):
+            session['user_type'] = 'patient'
+            login_user(user1)
             return redirect(url_for('authentication_blueprint.route_default'))
+        if user2 and verify_pass(password, user2.password):
+            session['user_type'] = 'doctor'
+            login_user(user2)
+            return redirect(url_for('home_blueprint.doctor'))
 
         # Something (user or pass) is not ok
         return render_template('accounts/login.html',
@@ -91,6 +94,46 @@ def register():
 
     else:
         return render_template('accounts/register.html', form=create_account_form)
+
+
+@blueprint.route('/doctorsignup', methods=['GET', 'POST'])
+def doctor():
+    create_account_form = DoctorAccountForm(request.form)
+    if create_account_form.validate_on_submit():
+        username = request.form['username']
+        email = request.form['email']
+
+        # Check usename exists
+        user = Doctors.query.filter_by(username=username).first()
+        if user:
+            return render_template('accounts/Doctorsignup.html',
+                                   msg='Username already registered',
+                                   success=False,
+                                   form=create_account_form)
+
+        # Check email exists
+        user = Doctors.query.filter_by(email=email).first()
+        if user:
+            return render_template('accounts/Doctorsignup.html',
+                                   msg='Email already registered',
+                                   success=False,
+                                   form=create_account_form)
+
+        # else we can create the user
+        user = Doctors(username = create_account_form.username.data, Hospital = create_account_form.hospital.data, email = create_account_form.email.data, password = create_account_form.password.data)
+        db.session.add(user)
+        db.session.commit()
+
+        # Delete user from session
+        logout_user()
+
+        return render_template('accounts/Doctorsignup.html',
+                               msg='User created successfully.',
+                               success=True,
+                               form=create_account_form)
+
+    else:
+        return render_template('accounts/Doctorsignup.html', form=create_account_form)
 
 
 @blueprint.route('/logout')

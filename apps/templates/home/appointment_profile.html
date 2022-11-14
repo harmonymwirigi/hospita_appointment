@@ -1,0 +1,122 @@
+{% extends 'layouts/doctor_base.html' %}
+
+{% block title %} Profile {% endblock title %}
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+    <div class="container-fluid">
+
+      <div class="page-header min-height-100 border-radius-xl mt-4" style="background-image: url('{{ config.ASSETS_ROOT }}/img/curved-images/curved0.jpg'); background-position-y: 50%;">
+        <span class="mask bg-gradient-primary opacity-6"></span>
+      </div>
+      <div class="card card-body blur shadow-blur mx-4 mt-n6 overflow-hidden">
+        <div class="row gx-4">
+          <div class="col-auto">
+            <div class="avatar avatar-xl position-relative">
+            </div>
+          </div>
+          <div class="col-auto my-auto">
+            <div class="h-100">
+              <h5 class="mb-1">
+                Your Appintment With <strong>{{appointment.Name}}</strong>
+              </h5>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="container-fluid py-2">
+
+      <div class="row" style="margin: 0px;padding: 0px;">
+        <div class="col-12 col-xl-4">
+          <div class="card h-100">
+            <div class="card-header pb-0 p-3">
+              <h6 class="mb-0">QUESTIONS</h6>
+            </div>
+            <div class="card-body p-3">
+              <h6 class="text-uppercase text-body text-xs font-weight-bolder">The Patient asked the following</h6>
+                      {% if appointment.questions %}
+                      {% for i in appointment.questions %}
+                      <ul class="list-group">
+                        <li class="list-group-item border-0 px-0">
+                          <div class="form-check form-switch ps-0">
+                            <label class="form-check-label text-body ms-3 text-truncate w-80 mb-0" for="flexSwitchCheckDefault">
+                            {{ i.question }}
+                          </label>
+                        </div>
+                      </li>
+                    </ul>
+                      {% endfor %}
+                      {% endif %}
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-xl-4">
+          <div class="card h-100 ">
+            <div class="card-header pb-0 p-3">
+              <div class="row">
+                <div class="col-md-8 d-flex align-items-center">
+                  <h6 class="mb-0">Profile Information</h6>
+                </div>
+              </div>
+            </div>
+            <div class="card-body p-4">
+              <hr class="horizontal gray-light my-2">
+              <ul class="list-group">
+                <li class="list-group-item border-0 ps-0 pt-0 text-sm"><strong class="text-dark">Full Name:</strong> &nbsp; {{appointment.Name}}</li>
+                <li class="list-group-item border-0 ps-0 text-sm"><strong class="text-dark">Mobile:</strong> &nbsp; {{appointment.Phoneno}}</li>
+                <li class="list-group-item border-0 ps-0 text-sm"><strong class="text-dark">Age:</strong> &nbsp; {{appointment.Age}} Years Old</li>
+                <li class="list-group-item border-0 ps-0 text-sm"><strong class="text-dark">Height:</strong> &nbsp; {{appointment.height}} Metres</li>
+                <li class="list-group-item border-0 ps-0 text-sm"><strong class="text-dark">Height:</strong> &nbsp; {{appointment.weight}} Kgs</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-xl-4">
+          <div class="card">
+            <div class="card-header pb-0 p-3">
+              <h6 class="mb-1">PHOTOS</h6>
+            </div>
+            <div class="card-body p-3">
+              <ul class="list-group m-0">
+                <li class="list-group-item border-0 d-flex align-items-center px-0 mb-2">
+                  <div class="avatar me-3  w-60 h-100">
+                    <img src="{{ config.ASSETS_ROOT }}/img/kal-visuals-square.jpg" alt="kal" class="border-radius-lg shadow ">
+                  </div>
+
+                </li>
+                <li class="list-group-item border-0 d-flex align-items-center px-0 mb-2">
+                  <div class="avatar me-3 w-60 h-100">
+                    <img src="{{ config.ASSETS_ROOT }}/img/marie.jpg" alt="kal" class="border-radius-lg shadow">
+                  </div>
+                </li>
+                <li class="list-group-item border-0 d-flex align-items-center px-0 mb-2">
+                  <div class="avatar me-3 w-60 h-100">
+                    <img src="{{ config.ASSETS_ROOT }}/img/ivana-square.jpg" alt="kal" class="border-radius-lg shadow">
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <form role="form text-left" method="post" action="">
+          {{completeAppintment.hidden_tag()}}
+          <div class="text-center">
+            <button type="submit" name="book" class="btn bg-gradient-info mt-4 mb-0">{{completeAppintment.Check}}</button>
+          </div>
+        </form>
+      </div>
+
+      {% include "includes/footer.html" %}
+
+    </div>
+
+{% endblock content %}
+
+<!-- Specific JS goes HERE --> 
+{% block javascripts %}{% endblock javascripts %}
